@@ -12,8 +12,8 @@ public class FileService {
     private final String uploadPath;
 
     public FileService() throws IOException {
-//        uploadPath = System.getenv("UPLOAD_PATH");
-        uploadPath = "/home/azat/IdeaProjects/HW.webapp/upload";
+        uploadPath = System.getenv("UPLOAD_PATH");
+//        uploadPath = "/home/azat/IdeaProjects/HW.webapp/upload";
         Files.createDirectories(Paths.get(uploadPath));
     }
 
