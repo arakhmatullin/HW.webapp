@@ -13,7 +13,6 @@ public class FileService {
 
     public FileService() throws IOException {
         uploadPath = System.getenv("UPLOAD_PATH");
-//        uploadPath = "/home/azat/IdeaProjects/HW.webapp/upload";
         Files.createDirectories(Paths.get(uploadPath));
     }
 
@@ -21,6 +20,7 @@ public class FileService {
         Path path = Paths.get(uploadPath).resolve(id);
         Files.copy(path, os);
     }
+
     public String writeFile(Part part) throws IOException {
         final String id = UUID.randomUUID().toString();
         part.write(Paths.get(uploadPath).resolve(id).toString());

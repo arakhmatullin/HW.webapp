@@ -2,6 +2,7 @@ package ru.itpark.service;
 
 import lombok.var;
 import ru.itpark.domain.Auto;
+import ru.itpark.util.JdbcTemplate;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -30,37 +31,24 @@ public class AutoService {
 
     public List<Auto> getAll() throws SQLException {
         final String sql = "SELECT id, name, description, imageUrl FROM autos";
-        try (Connection conn = ds.getConnection()) {
-            try (Statement stmt = conn.createStatement()) {
-                try (ResultSet rs = stmt.executeQuery(sql)) {
-                    ArrayList<Auto> list = new ArrayList<>();
-                    while (rs.next()) {
-                        list.add(new Auto(
-                                        rs.getString("id"),
-                                        rs.getString("name"),
-                                        rs.getString("description"),
-                                        rs.getString("imageUrl")
-                                )
-                        );
-                    }
-                    return list;
-                }
-            }
-        }
+        return JdbcTemplate.execQuery(ds,sql, rs -> new Auto(
+                rs.getString("id"),
+                rs.getString("name"),
+                rs.getString("description"),
+                rs.getString("imageUrl")
+                )
+        );
     }
 
     public void create(String name, String description, String imageUrl) throws SQLException {
         final String sql = "INSERT INTO autos (id, name, description, imageUrl) VALUES (?, ?, ?, ?)";
-        try (Connection conn = ds.getConnection()) {
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setString(1, UUID.randomUUID().toString());
-                stmt.setString(2, name);
-                stmt.setString(3, description);
-                stmt.setString(4, imageUrl);
-                stmt.execute();
-
-            }
+        JdbcTemplate.execUpdate(ds,sql, stmt-> {
+            stmt.setString(1, UUID.randomUUID().toString());
+            stmt.setString(2, name);
+            stmt.setString(3, description);
+            stmt.setString(4, imageUrl);
         }
+        );
 
     }
 }
